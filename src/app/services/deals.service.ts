@@ -17,9 +17,19 @@ export class DealsService {
 
     private _deals: BehaviorSubject<Deal[]> = new BehaviorSubject([]);
     private _currency: BehaviorSubject<string> = new BehaviorSubject('');
+    private _departureCities: BehaviorSubject<string[]> = new BehaviorSubject([]);
+    private _arrivalCities: BehaviorSubject<string[]> = new BehaviorSubject([]);
 
     get deals(): BehaviorSubject<Deal[]> {
         return this._deals;
+    }
+
+    get departureCities(): BehaviorSubject<string[]> {
+        return this._departureCities;
+    }
+
+    get arrivalCities(): BehaviorSubject<string[]> {
+        return this._arrivalCities;
     }
 
     get currency(): BehaviorSubject<string> {
@@ -42,9 +52,17 @@ export class DealsService {
                             deals = (<Object[]>data.deals).map((deal: any) => {
                                 return DealAdapter.parseResponse(deal);
                             });
-                            this._deals.next(deals);
+                            const departureCities: string[] = _.chain(deals).map((currentDeal: Deal) => {
+                                return currentDeal.departure;
+                            }).uniq().value();
+                            const arrivalCities: string[] = _.chain(deals).map((currentDeal: Deal) => {
+                                return currentDeal.arrival;
+                            }).uniq().value();
+                            this._departureCities.next(departureCities);
+                            this._arrivalCities.next(arrivalCities);
                         }
                         this._currency.next(data.currency);
+                        this._deals.next(deals);
                     }
                     resolve(deals);
                 }, (error) => {

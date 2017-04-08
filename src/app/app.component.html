@@ -1,1 +1,34 @@
 <md-toolbar>Trip Sorter</md-toolbar>
+<div *ngIf="deals.length > 0">
+    <md-input-container>
+        <input mdInput placeholder="From" [mdAutocomplete]="fromCity" [formControl]="fromCityCtrl">
+    </md-input-container>
+
+    <md-autocomplete #fromCity="mdAutocomplete">
+        <md-option *ngFor="let city of filteredFromCities | async" [value]="city">
+            {{ city }}
+        </md-option>
+    </md-autocomplete>
+
+    <md-input-container>
+        <input mdInput placeholder="To" [mdAutocomplete]="toCity" [formControl]="toCityCtrl">
+    </md-input-container>
+
+    <md-autocomplete #toCity="mdAutocomplete">
+        <md-option *ngFor="let city of filteredToCities | async" [value]="city">
+            {{ city }}
+        </md-option>
+    </md-autocomplete>
+
+    <md-button-toggle-group #orderBy="mdButtonToggleGroup">
+        <md-button-toggle value="CHEAPEST" checked="true">
+            Cheapest
+        </md-button-toggle>
+        <md-button-toggle value="FASTEST">
+            Fastest
+        </md-button-toggle>
+    </md-button-toggle-group>
+
+
+    <button md-raised-button (click)="searchTrips()"><i class="material-icons">search</i>Search</button>
+</div>
