@@ -54,6 +54,6 @@ export class AppComponent {
     const fromCity: string = this.fromCityCtrl.value;
     const toCity: string = this.toCityCtrl.value;
     const orderBy: string = this.orderByCtrl.value;
-    debugger;
+    console.log(this._dealsService.findTrips(fromCity, toCity, orderBy));
   }
 }

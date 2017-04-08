@@ -27,4 +27,8 @@ export class Deal {
         this.discount = props.discount;
         this.reference = props.reference;
     }
+
+    get discountedCost(): number {
+        return this.discount ? this.cost - (this.cost * (this.discount / 100)) : this.cost;
+    }
 }

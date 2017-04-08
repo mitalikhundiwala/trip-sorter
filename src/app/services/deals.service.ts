@@ -8,6 +8,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/fromPromise';
 
 import { Deal } from '../models/deal';
+import { Trip } from '../models/trip';
 import { DealAdapter } from './adapters/deal.adapter';
 
 @Injectable()
@@ -70,6 +71,35 @@ export class DealsService {
                 });
         });
         return <Observable<Deal[]>>Observable.fromPromise(promise);
+    }
+
+    findTrips(fromCity: string, toCity: string, orderBy: string): Trip[] {
+        let matchingTrips: Trip[] = [];
+
+        let dealsWithMatchingFromCity: Deal[] = _.filter(this.deals.getValue(), (currentDeal: Deal) => {
+            return currentDeal.departure === fromCity;
+        });
+
+        let dealsWithMatchingToCity: Deal[] = _.filter(this.deals.getValue(), (currentDeal: Deal) => {
+            return currentDeal.arrival === toCity;
+        });
+
+        let dealsWithExactMatch: Deal[] = _.intersection(dealsWithMatchingFromCity, dealsWithMatchingToCity);
+
+        matchingTrips = _.map(dealsWithExactMatch, (currentDeal: Deal) => {
+            return new Trip({
+                fromCity: fromCity,
+                toCity: toCity,
+                currency: this.currency.getValue(),
+                combination: [currentDeal]
+            });
+        });
+
+        matchingTrips = _.sortBy(matchingTrips, (currentTrip: Trip) => {
+            return orderBy === 'CHEAPEST' ? currentTrip.totalCost : currentTrip.totalDuration;
+        });
+
+        return matchingTrips;
     }
 
 }
