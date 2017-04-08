@@ -1,5 +1,7 @@
+import { BehaviorSubject } from 'rxjs/Rx';
 import { DealsService } from './services/deals.service';
 import { Deal } from './models/deal';
+import { Trip } from './models/trip';
 import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/startWith';
@@ -17,6 +19,7 @@ export class AppComponent {
   toCityCtrl: FormControl;
   filteredFromCities: any;
   filteredToCities: any;
+  matchingTrips: BehaviorSubject<Trip[]> = new BehaviorSubject([]);
   @ViewChild('orderBy')
   orderByCtrl: MdButtonToggleGroup;
 
@@ -54,6 +57,6 @@ export class AppComponent {
     const fromCity: string = this.fromCityCtrl.value;
     const toCity: string = this.toCityCtrl.value;
     const orderBy: string = this.orderByCtrl.value;
-    console.log(this._dealsService.findTrips(fromCity, toCity, orderBy));
+    this.matchingTrips.next(this._dealsService.findTrips(fromCity, toCity, orderBy));
   }
 }

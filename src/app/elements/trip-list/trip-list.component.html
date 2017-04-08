@@ -1,0 +1,6 @@
+
+  <md-card *ngFor="let trip of trips">
+    <h4>Total Cost: {{trip.totalCost}} {{trip.currency}}</h4>
+    <h3>Total Duration: {{trip.totalDuration.hours}}h {{trip.totalDuration.minutes}}m ({{trip.totalDurationInMinutes}} Minutes)</h3>
+    <app-deal-list [deals]="trip.combination"></app-deal-list>
+  </md-card>

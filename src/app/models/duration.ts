@@ -4,7 +4,7 @@ export class Duration {
 
     static fromMinutes(minutes: number): Duration {
         return new Duration({
-            hours: Math.ceil(minutes / 60),
+            hours: Math.floor(minutes / 60),
             minutes: minutes % 60
         });
     }

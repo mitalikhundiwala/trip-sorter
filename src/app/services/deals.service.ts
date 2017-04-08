@@ -96,7 +96,7 @@ export class DealsService {
         });
 
         matchingTrips = _.sortBy(matchingTrips, (currentTrip: Trip) => {
-            return orderBy === 'CHEAPEST' ? currentTrip.totalCost : currentTrip.totalDuration;
+            return orderBy === 'CHEAPEST' ? currentTrip.totalCost : currentTrip.totalDurationInMinutes;
         });
 
         return matchingTrips;

@@ -30,5 +30,9 @@
     </md-button-toggle-group>
 
 
-    <button md-raised-button (click)="searchTrips()"><i class="material-icons">search</i>Search</button>
+    <button md-raised-button (click)="searchTrips()"><md-icon>search</md-icon>Search</button>
+
+    <section>
+        <app-trip-list [trips]="matchingTrips | async"></app-trip-list>        
+    </section>
 </div>

@@ -1,3 +1,4 @@
+import { Duration } from './duration';
 import { Deal } from './deal';
 import * as _ from 'underscore';
 
@@ -19,10 +20,14 @@ export class Trip {
         this.combination = props.combination;
     }
 
-    get totalDuration(): number {
+    get totalDurationInMinutes(): number {
         return _.reduce(this.combination, (totalDuration: number, currentDeal: Deal) => {
             return totalDuration + currentDeal.duration.totalMinutes;
         }, 0);
+    }
+
+    get totalDuration(): Duration {
+        return Duration.fromMinutes(this.totalDurationInMinutes);
     }
 
     get totalCost(): number {
