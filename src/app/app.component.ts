@@ -1,3 +1,5 @@
+import { DealsService } from './services/deals.service';
+import { Deal } from './models/deal';
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,5 +8,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'app works!';
+  deals: Deal[] = [];
+
+  constructor(
+    private _dealsService: DealsService
+  ) {
+    this._dealsService.fetchDeals()
+      .subscribe((deals) => {
+        this.deals = deals;
+        debugger;
+      });
+  }
 }
