@@ -9,6 +9,7 @@ import 'rxjs/add/observable/fromPromise';
 
 import { Deal } from '../models/deal';
 import { Trip } from '../models/trip';
+import { Graph } from '../models/graph';
 import { DealAdapter } from './adapters/deal.adapter';
 
 @Injectable()
@@ -73,18 +74,30 @@ export class DealsService {
         return <Observable<Deal[]>>Observable.fromPromise(promise);
     }
 
-    findTrips(fromCity: string, toCity: string, orderBy: string): Trip[] {
+    findTrips(fromCity: string, toCity: string, orderBy: string, useCar: boolean, useBus: boolean, useTrain: boolean): Trip[] {
         let matchingTrips: Trip[] = [];
 
-        let dealsWithMatchingFromCity: Deal[] = _.filter(this.deals.getValue(), (currentDeal: Deal) => {
+        let filteredDeals: Deal[] = _.filter(this.deals.getValue(), (currentDeal: Deal) => {
+            if (useCar && currentDeal.transport === 'car') {
+                return true;
+            } else if (useBus && currentDeal.transport === 'bus') {
+                return true;
+            } else if (useTrain && currentDeal.transport === 'train') {
+                return true;
+            }
+
+            return false;
+        });
+
+        const dealsWithMatchingFromCity: Deal[] = _.filter(filteredDeals, (currentDeal: Deal) => {
             return currentDeal.departure === fromCity;
         });
 
-        let dealsWithMatchingToCity: Deal[] = _.filter(this.deals.getValue(), (currentDeal: Deal) => {
+        const dealsWithMatchingToCity: Deal[] = _.filter(filteredDeals, (currentDeal: Deal) => {
             return currentDeal.arrival === toCity;
         });
 
-        let dealsWithExactMatch: Deal[] = _.intersection(dealsWithMatchingFromCity, dealsWithMatchingToCity);
+        const dealsWithExactMatch: Deal[] = _.intersection(dealsWithMatchingFromCity, dealsWithMatchingToCity);
 
         matchingTrips = _.map(dealsWithExactMatch, (currentDeal: Deal) => {
             return new Trip({
@@ -95,10 +108,61 @@ export class DealsService {
             });
         });
 
+        const departureCities: string[] = _.chain(filteredDeals).map((currentDeal: Deal) => {
+            return currentDeal.departure;
+        }).uniq().value();
+        const arrivalCities: string[] = _.chain(filteredDeals).map((currentDeal: Deal) => {
+            return currentDeal.arrival;
+        }).uniq().value();
+        const allCities = _.union(departureCities, arrivalCities);
+
+        let routesMap: any = {};
+        _.forEach(allCities, (currentCity: string) => {
+            const matchingDeals: Deal[] = _.filter(filteredDeals, (currentDeal: Deal) => {
+                return currentDeal.departure === currentCity;
+            });
+            routesMap[currentCity] = {};
+            _.forEach(matchingDeals, (currentDeal: Deal) => {
+                if (orderBy === 'CHEAPEST') {
+                    routesMap[currentCity][currentDeal.arrival] = currentDeal.discountedCost;
+                } else {
+                    routesMap[currentCity][currentDeal.arrival] = currentDeal.duration.totalMinutes;
+                }
+            });
+        });
+        const Graph = (<any>window).Graph;
+        const routesGraph = new Graph(routesMap);
+        const shortestPath: string[] = routesGraph.findShortestPath(fromCity, toCity);
+
+        const dealsForPath: Deal[] = _.times(shortestPath.length - 1, (i: number) => {
+            const departure: string = shortestPath[i];
+            const arrival: string = shortestPath[i + 1];
+
+            return _.chain(filteredDeals)
+                .filter((currentDeal: Deal) => {
+                    return currentDeal.arrival === arrival && currentDeal.departure === departure;
+                })
+                .sortBy((currentDeal: Deal) => {
+                    return orderBy === 'CHEAPEST' ? currentDeal.discountedCost : currentDeal.duration.totalMinutes;
+                })
+                .first()
+                .value();
+        });
+
+        const tripForShortestPath: Trip = new Trip({
+            fromCity: fromCity,
+            toCity: toCity,
+            currency: this.currency.getValue(),
+            combination: dealsForPath
+        });
+
+        if (tripForShortestPath && tripForShortestPath.combination.length > 1) {
+            matchingTrips.push(tripForShortestPath);
+        }
+
         matchingTrips = _.sortBy(matchingTrips, (currentTrip: Trip) => {
             return orderBy === 'CHEAPEST' ? currentTrip.totalCost : currentTrip.totalDurationInMinutes;
         });
-
         return matchingTrips;
     }
 

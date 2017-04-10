@@ -29,10 +29,13 @@
         </md-button-toggle>
     </md-button-toggle-group>
 
+    <md-checkbox class="example-margin" value="car" [(ngModel)]="useCar">Car</md-checkbox>
+    <md-checkbox class="example-margin" value="bus" [(ngModel)]="useBus">Bus</md-checkbox>
+    <md-checkbox class="example-margin" value="train" [(ngModel)]="useTrain">Train</md-checkbox>
 
     <button md-raised-button (click)="searchTrips()"><md-icon>search</md-icon>Search</button>
 
     <section>
-        <app-trip-list [trips]="matchingTrips | async"></app-trip-list>        
+        <app-trip-list [trips]="matchingTrips | async"></app-trip-list>
     </section>
 </div>
