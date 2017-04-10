@@ -53,6 +53,9 @@
                 </div>
             </div>
             <div class="col-xs-5">
+                <div class="empty-state-error" *ngIf="(matchingTrips | async)?.length == 0 && isFormValid">
+                    <h2>No Matching Trips Found! :( </h2>
+                </div>
                 <app-trip-list [trips]="matchingTrips | async"></app-trip-list>
             </div>
         </div>

@@ -21,6 +21,7 @@ export class AppComponent {
   useCar: boolean = true;
   useBus: boolean = true;
   useTrain: boolean = true;
+  isFormValid: boolean = false;
   filteredFromCities: any;
   filteredToCities: any;
   matchingTrips: BehaviorSubject<Trip[]> = new BehaviorSubject([]);
@@ -59,6 +60,7 @@ export class AppComponent {
   }
 
   searchTrips() {
+    this.isFormValid = false;
     const fromCity: string = this.fromCityCtrl.value;
     const toCity: string = this.toCityCtrl.value;
     const orderBy: string = this.orderByCtrl.value;
@@ -75,6 +77,7 @@ export class AppComponent {
         duration: 3000
       });
     } else {
+      this.isFormValid = true;
       this.matchingTrips.next(this._dealsService.findTrips(fromCity, toCity, orderBy, this.useCar, this.useBus, this.useTrain));
     }
   }
