@@ -133,33 +133,33 @@ export class DealsService {
         const Graph = (<any>window).Graph;
         const routesGraph = new Graph(routesMap);
         const shortestPath: string[] = routesGraph.findShortestPath(fromCity, toCity);
+        if (shortestPath) {
+            const dealsForPath: Deal[] = _.times(shortestPath.length - 1, (i: number) => {
+                const departure: string = shortestPath[i];
+                const arrival: string = shortestPath[i + 1];
 
-        const dealsForPath: Deal[] = _.times(shortestPath.length - 1, (i: number) => {
-            const departure: string = shortestPath[i];
-            const arrival: string = shortestPath[i + 1];
+                return _.chain(filteredDeals)
+                    .filter((currentDeal: Deal) => {
+                        return currentDeal.arrival === arrival && currentDeal.departure === departure;
+                    })
+                    .sortBy((currentDeal: Deal) => {
+                        return orderBy === 'CHEAPEST' ? currentDeal.discountedCost : currentDeal.duration.totalMinutes;
+                    })
+                    .first()
+                    .value();
+            });
 
-            return _.chain(filteredDeals)
-                .filter((currentDeal: Deal) => {
-                    return currentDeal.arrival === arrival && currentDeal.departure === departure;
-                })
-                .sortBy((currentDeal: Deal) => {
-                    return orderBy === 'CHEAPEST' ? currentDeal.discountedCost : currentDeal.duration.totalMinutes;
-                })
-                .first()
-                .value();
-        });
+            const tripForShortestPath: Trip = new Trip({
+                fromCity: fromCity,
+                toCity: toCity,
+                currency: this.currency.getValue(),
+                combination: dealsForPath
+            });
 
-        const tripForShortestPath: Trip = new Trip({
-            fromCity: fromCity,
-            toCity: toCity,
-            currency: this.currency.getValue(),
-            combination: dealsForPath
-        });
-
-        if (tripForShortestPath && tripForShortestPath.combination.length > 1) {
-            matchingTrips.push(tripForShortestPath);
+            if (tripForShortestPath && tripForShortestPath.combination.length > 1) {
+                matchingTrips.push(tripForShortestPath);
+            }
         }
-
         matchingTrips = _.sortBy(matchingTrips, (currentTrip: Trip) => {
             return orderBy === 'CHEAPEST' ? currentTrip.totalCost : currentTrip.totalDurationInMinutes;
         });

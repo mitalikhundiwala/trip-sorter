@@ -1,6 +1,21 @@
+<div class="primary-trip-wrapper" *ngIf="primaryTrip">
+  <h3>Best Match</h3>
+  <md-card class="trip-detail">
+    <md-card-header>
+      <md-card-title>Cost: {{primaryTrip.totalCost}} {{primaryTrip.currency}} <em>({{primaryTrip.combination.length > 1 ? (primaryTrip.combination.length - 1) + ' Stops' : 'Direct Trip'}})</em></md-card-title>
+      <md-card-subtitle>Total Duration: {{primaryTrip.totalDuration.hours}}h {{primaryTrip.totalDuration.minutes}}m</md-card-subtitle>
+    </md-card-header>
+    <app-deal-list [deals]="primaryTrip.combination"></app-deal-list>
+  </md-card>
+</div>
 
-  <md-card *ngFor="let trip of trips">
-    <h4>Total Cost: {{trip.totalCost}} {{trip.currency}}</h4>
-    <h3>Total Duration: {{trip.totalDuration.hours}}h {{trip.totalDuration.minutes}}m ({{trip.totalDurationInMinutes}} Minutes)</h3>
+<div class="additional-trips-wrapper" *ngIf="additionalTrips.length > 0">
+  <h3>Additional Direct Trips</h3>
+  <md-card class="trip-detail" *ngFor="let trip of additionalTrips">
+    <md-card-header>
+      <md-card-title>Cost: {{trip.totalCost}} {{trip.currency}} <em>({{trip.combination.length > 1 ? (trip.combination.length - 1) + ' Stops' : 'Direct Trip'}})</em></md-card-title>
+      <md-card-subtitle>Total Duration: {{trip.totalDuration.hours}}h {{trip.totalDuration.minutes}}m</md-card-subtitle>
+    </md-card-header>
     <app-deal-list [deals]="trip.combination"></app-deal-list>
   </md-card>
+</div>

@@ -6,6 +6,7 @@ import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/startWith';
 
+import { MdSnackBar } from '@angular/material';
 import { MdButtonToggleGroup } from '@angular/material';
 
 @Component({
@@ -27,6 +28,7 @@ export class AppComponent {
   orderByCtrl: MdButtonToggleGroup;
 
   constructor(
+    public snackBar: MdSnackBar,
     private _dealsService: DealsService
   ) {
     this._dealsService.fetchDeals()
@@ -60,7 +62,20 @@ export class AppComponent {
     const fromCity: string = this.fromCityCtrl.value;
     const toCity: string = this.toCityCtrl.value;
     const orderBy: string = this.orderByCtrl.value;
-
-    this.matchingTrips.next(this._dealsService.findTrips(fromCity, toCity, orderBy, this.useCar, this.useBus, this.useTrain));
+    if (!fromCity) {
+      this.snackBar.open('Please enter from city.', '', {
+        duration: 3000
+      });
+    } else if (!toCity) {
+      this.snackBar.open('Please enter to city.', '', {
+        duration: 3000
+      });
+    } else if (!this.useCar && !this.useBus && !this.useTrain) {
+      this.snackBar.open('Please select atleast one transport.', '', {
+        duration: 3000
+      });
+    } else {
+      this.matchingTrips.next(this._dealsService.findTrips(fromCity, toCity, orderBy, this.useCar, this.useBus, this.useTrain));
+    }
   }
 }

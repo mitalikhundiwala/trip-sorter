@@ -1,41 +1,60 @@
 <md-toolbar>Trip Sorter</md-toolbar>
-<div *ngIf="deals.length > 0">
-    <md-input-container>
-        <input mdInput placeholder="From" [mdAutocomplete]="fromCity" [formControl]="fromCityCtrl">
-    </md-input-container>
+<div class="app-content">
+    <div *ngIf="deals.length > 0">
+        <div class="row">
+            <div class="col-xs-3">
+                <div class="places-input-wrapper">
+                    <h1>Help me go,</h1>
+                    <p>
+                        <md-input-container>
+                            <input mdInput placeholder="From City" [mdAutocomplete]="fromCity" [formControl]="fromCityCtrl">
+                        </md-input-container>
+                        <md-autocomplete #fromCity="mdAutocomplete">
+                            <md-option *ngFor="let city of filteredFromCities | async" [value]="city">
+                                {{ city }}
+                            </md-option>
+                        </md-autocomplete>
+                    </p>
+                    <p>
+                        <md-input-container>
+                            <input mdInput placeholder="To City" [mdAutocomplete]="toCity" [formControl]="toCityCtrl">
+                        </md-input-container>
 
-    <md-autocomplete #fromCity="mdAutocomplete">
-        <md-option *ngFor="let city of filteredFromCities | async" [value]="city">
-            {{ city }}
-        </md-option>
-    </md-autocomplete>
+                        <md-autocomplete #toCity="mdAutocomplete">
+                            <md-option *ngFor="let city of filteredToCities | async" [value]="city">
+                                {{ city }}
+                            </md-option>
+                        </md-autocomplete>
+                    </p>
+                </div>
 
-    <md-input-container>
-        <input mdInput placeholder="To" [mdAutocomplete]="toCity" [formControl]="toCityCtrl">
-    </md-input-container>
+                <div class="variations-wrapper">
+                    <p>
+                        Showing
+                    </p>
+                    <md-button-toggle-group #orderBy="mdButtonToggleGroup">
+                        <md-button-toggle value="CHEAPEST" checked="true">
+                            Cheapest
+                        </md-button-toggle>
+                        <md-button-toggle value="FASTEST">
+                            Fastest
+                        </md-button-toggle>
+                    </md-button-toggle-group>
+                    <p>
+                        route, while travelling by,
+                    </p>
+                    <md-checkbox class="example-margin" value="car" [(ngModel)]="useCar">Car</md-checkbox>
+                    <md-checkbox class="example-margin" value="bus" [(ngModel)]="useBus">Bus</md-checkbox>
+                    <md-checkbox class="example-margin" value="train" [(ngModel)]="useTrain">Train</md-checkbox>
+                </div>
 
-    <md-autocomplete #toCity="mdAutocomplete">
-        <md-option *ngFor="let city of filteredToCities | async" [value]="city">
-            {{ city }}
-        </md-option>
-    </md-autocomplete>
-
-    <md-button-toggle-group #orderBy="mdButtonToggleGroup">
-        <md-button-toggle value="CHEAPEST" checked="true">
-            Cheapest
-        </md-button-toggle>
-        <md-button-toggle value="FASTEST">
-            Fastest
-        </md-button-toggle>
-    </md-button-toggle-group>
-
-    <md-checkbox class="example-margin" value="car" [(ngModel)]="useCar">Car</md-checkbox>
-    <md-checkbox class="example-margin" value="bus" [(ngModel)]="useBus">Bus</md-checkbox>
-    <md-checkbox class="example-margin" value="train" [(ngModel)]="useTrain">Train</md-checkbox>
-
-    <button md-raised-button (click)="searchTrips()"><md-icon>search</md-icon>Search</button>
-
-    <section>
-        <app-trip-list [trips]="matchingTrips | async"></app-trip-list>
-    </section>
+                <div class="actions-wrapper">
+                    <button md-raised-button color="primary" (click)="searchTrips()"><md-icon>search</md-icon>Search</button>
+                </div>
+            </div>
+            <div class="col-xs-5">
+                <app-trip-list [trips]="matchingTrips | async"></app-trip-list>
+            </div>
+        </div>
+    </div>
 </div>

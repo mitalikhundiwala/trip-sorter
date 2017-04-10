@@ -1,6 +1,15 @@
 <md-list>
   <md-list-item *ngFor="let deal of deals">
-    <h4 md-line>{{deal.departure}} > {{deal.arrival}}</h4> 
-    <p md-line> {{deal.transport}} {{deal.reference}} for {{deal.duration.hours}}h {{deal.duration.minutes}}m</p>
+    <h4 md-line>
+      <span>{{deal.departure}}</span>
+      <i class="fa fa-caret-right"></i> 
+      <span>{{deal.arrival}}</span>
+    </h4>
+    <p md-line>
+      <i *ngIf="deal.transport === 'car'" class="fa fa-car"></i>
+      <i *ngIf="deal.transport === 'bus'" class="fa fa-bus"></i>
+      <i *ngIf="deal.transport === 'train'" class="fa fa-train"></i> {{deal.transport}}
+      <em>({{deal.reference}})</em> for
+      <strong>{{deal.duration.hours}}h {{deal.duration.minutes}}m</strong></p>
   </md-list-item>
 </md-list>
