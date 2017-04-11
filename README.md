@@ -1,28 +1,21 @@
-# TripSorter
+# Trip Sorter
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0.
+The project is created using angular-cli & it is using Angular 2 with TypeScript.
 
-## Development server
+## Required Software
+1. NodeJS with NPM -- version 7.x (https://nodejs.org/en/download)
+2. Visual Studio Code as Code Editor. It has good support for TypeScript & Angular 2. (https://code.visualstudio.com/download)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## To setup development environment
 
-## Code scaffolding
+1. Install NodeJS
+2. To make sure node & npm are installed using following commands.
+`node -v`
+`npm -v`
+3. Install global npm packages for typescript & angular-cli using following commands.
+`npm install -g typescript`
+`npm install -g @angular/cli`
+4. Checkout project using git and open a command window there.
+5. Run `npm install` command to install dependecies.
+6. Run `ng serve` command. It will build application and will automatically start local server. If browser window doesn't open automatically, you can navigate to URL `http://localhost:4200`. Default port is 4200.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class/module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
