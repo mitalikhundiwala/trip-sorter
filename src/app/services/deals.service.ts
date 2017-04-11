@@ -14,7 +14,6 @@ import { DealAdapter } from './adapters/deal.adapter';
 
 @Injectable()
 export class DealsService {
-    private _url: string = `${environment.SERVICE_BASE_URL}`;
     private _headers: Headers = new Headers();
 
     private _deals: BehaviorSubject<Deal[]> = new BehaviorSubject([]);
@@ -46,7 +45,7 @@ export class DealsService {
 
     fetchDeals(): Observable<Deal[]> {
         let promise: Promise<Deal[]> = new Promise((resolve, reject) => {
-            return this._http.get(this._url + 'assets/data/response.json').map(res => res.json())
+            return this._http.get('./assets/data/response.json').map(res => res.json())
                 .subscribe((data: any) => {
                     let deals: Deal[] = [];
                     if (data) {
